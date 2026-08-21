@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="file" path="OneLoop/" />
+    <exclude domain="sharedpref" path="oneloop_notification_ids.xml" />
+</full-backup-content>
