@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,15 +31,10 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,7 +51,9 @@ import com.davidcarranco.oneloop.medtracker.data.model.DoseStatus
 import com.davidcarranco.oneloop.medtracker.data.model.ScheduledDose
 import com.davidcarranco.oneloop.medtracker.data.repository.MedicationStore
 import com.davidcarranco.oneloop.medtracker.ui.components.FloatingMenuSpacer
+import com.davidcarranco.oneloop.medtracker.ui.components.GlassCircleButton
 import com.davidcarranco.oneloop.medtracker.ui.components.OneLoopCard
+import com.davidcarranco.oneloop.medtracker.ui.components.OneLoopPageHeader
 import com.davidcarranco.oneloop.medtracker.ui.theme.OneLoopTheme
 import com.davidcarranco.oneloop.medtracker.ui.theme.icon
 import com.davidcarranco.oneloop.medtracker.ui.theme.tint
@@ -66,7 +64,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodayScreen(
     store: MedicationStore,
@@ -76,40 +73,25 @@ fun TodayScreen(
 ) {
     val colors = OneLoopTheme.colors
     val scheduled = store.scheduledDoses()
-    Scaffold(
-        containerColor = colors.softBackground,
-        topBar = {
-            TopAppBar(
-                title = { Text("Today", fontWeight = FontWeight.Bold) },
-                actions = {
-                    IconButton(onClick = onAddMedication) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add medication")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.softBackground),
-            )
-        },
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            HeaderSection()
-            AdherenceCard(store)
-            HeroStatusCard(store, onOpenMedication)
-            ScheduleSection(scheduled, onOpenMedication)
-            FloatingMenuSpacer(showFloatingClearance)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.softBackground)
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        HeaderSection(onAddMedication)
+        AdherenceCard(store)
+        HeroStatusCard(store, onOpenMedication)
+        ScheduleSection(scheduled, onOpenMedication)
+        FloatingMenuSpacer(showFloatingClearance)
     }
 }
 
 @Composable
-private fun HeaderSection() {
-    val colors = OneLoopTheme.colors
+private fun HeaderSection(onAddMedication: () -> Unit) {
     val now = Instant.now().atZone(ZoneId.systemDefault())
     val greeting = when (now.hour) {
         in 5..11 -> "Good morning"
@@ -120,10 +102,19 @@ private fun HeaderSection() {
     val date = now.toLocalDate().format(
         DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.getDefault()),
     )
-    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        Text(greeting, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = colors.navy)
-        Text(date, color = colors.mutedText)
-    }
+    OneLoopPageHeader(
+        eyebrow = "Today",
+        title = greeting,
+        subtitle = date,
+        applyStatusBarPadding = false,
+        trailing = {
+            GlassCircleButton(
+                icon = Icons.Filled.Add,
+                contentDescription = "Add medication",
+                onClick = onAddMedication,
+            )
+        },
+    )
 }
 
 @Composable

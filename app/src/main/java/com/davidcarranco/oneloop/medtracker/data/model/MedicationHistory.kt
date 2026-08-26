@@ -19,14 +19,23 @@ data class MedicationHistoryDose(
 data class MedicationHistoryEntry(
     val id: String = UUID.randomUUID().toString(),
     val medicationID: String,
-    @Serializable(with = IsoInstantSerializer::class)
-    val day: Instant,
     val name: String,
     val dosage: String,
     val form: Medication.Form,
     val instructions: String,
-    val doses: List<MedicationHistoryDose> = emptyList(),
+    @Serializable(with = IsoInstantSerializer::class)
+    val startDate: Instant = Instant.EPOCH,
+    val dosesPerDay: Int = 1,
+    val intervalHours: Int = 24,
+    @Serializable(with = IsoInstantSerializer::class)
+    val firstDoseTime: Instant = Instant.EPOCH,
+    val scheduledTimes: List<@Serializable(with = IsoInstantSerializer::class) Instant> = emptyList(),
     val wasRemovedFromSchedule: Boolean = false,
+    @Serializable(with = IsoInstantSerializer::class)
+    val recordedAt: Instant = Instant.EPOCH,
+    @Serializable(with = IsoInstantSerializer::class)
+    val day: Instant = Instant.EPOCH,
+    val doses: List<MedicationHistoryDose> = emptyList(),
 ) {
     val storageKey: String get() = medicationID
 

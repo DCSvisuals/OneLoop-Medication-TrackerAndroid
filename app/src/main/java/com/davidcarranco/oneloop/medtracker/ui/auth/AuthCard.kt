@@ -38,10 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,15 +95,28 @@ fun AuthCard(
         password.length >= 6 &&
         (mode == AuthMode.Login || acceptedTerms)
 
-    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        Text(
-            "OneLoop",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = colors.blue,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "oneloop",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Light,
+                fontFamily = FontFamily.Serif,
+                letterSpacing = 3.sp,
+                color = colors.navy,
+            )
+            Text(
+                "uiv2",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Serif,
+                letterSpacing = 3.sp,
+                color = colors.navy,
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,9 +127,10 @@ fun AuthCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                if (mode == AuthMode.Login) "Welcome to\nOneLoop — login now!" else "Create an Account?",
-                fontSize = 22.sp,
+                if (mode == AuthMode.Login) "Stay in your loop" else "Create an account",
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Serif,
                 color = colors.navy,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
@@ -200,7 +217,10 @@ fun AuthCard(
             }
 
             Text("Or Sign in with", color = colors.mutedText, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
+            ) {
                 Box(
                     modifier = Modifier
                         .size(52.dp)
@@ -209,10 +229,26 @@ fun AuthCard(
                         .border(1.dp, colors.cardBorder, CircleShape)
                         .clickable(enabled = !isBusy) {
                             scope.launch { supabase.signInWithGoogle() }
-                        },
+                        }
+                        .semantics { contentDescription = "Google" },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text("G", fontWeight = FontWeight.Bold, color = colors.navy, fontSize = 20.sp)
+                }
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(colors.softBackground)
+                        .border(1.dp, colors.cardBorder, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        "A",
+                        fontWeight = FontWeight.Bold,
+                        color = colors.mutedText.copy(alpha = 0.35f),
+                        fontSize = 20.sp,
+                    )
                 }
             }
         }

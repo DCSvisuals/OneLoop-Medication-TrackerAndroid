@@ -73,9 +73,9 @@ fun FloatingCapsuleNav(
             modifier = Modifier
                 .offset(y = (-26).dp)
                 .size(60.dp)
-                .shadow(14.dp, CircleShape, ambientColor = colors.lime.copy(0.35f))
+                .shadow(14.dp, CircleShape, ambientColor = colors.blue.copy(0.35f))
                 .clip(CircleShape)
-                .background(colors.lime)
+                .background(colors.blue)
                 .border(1.dp, Color.White.copy(alpha = 0.34f), CircleShape)
                 .clickable(onClick = onAdd)
                 .semantics { contentDescription = "Add medication" },
@@ -84,7 +84,7 @@ fun FloatingCapsuleNav(
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = null,
-                tint = colors.scheduleSelectionText,
+                tint = colors.actionText,
                 modifier = Modifier.size(28.dp),
             )
         }

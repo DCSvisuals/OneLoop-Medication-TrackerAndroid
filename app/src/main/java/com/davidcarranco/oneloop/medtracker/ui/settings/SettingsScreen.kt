@@ -161,7 +161,7 @@ fun SettingsScreen(
                 supportingContent = {
                     Text(
                         if (notificationsDenied) {
-                            "Notifications are turned off for OneLoop in Android Settings. Enable them to receive dose reminders."
+                            "Notifications are turned off for OneLoop UIv2 in Android Settings. Enable them to receive dose reminders."
                         } else {
                             "Receive a reminder at every scheduled medication dose."
                         },
@@ -194,7 +194,7 @@ fun SettingsScreen(
                                 }
                             }
                         },
-                        colors = SwitchDefaults.colors(checkedTrackColor = colors.success),
+                        colors = SwitchDefaults.colors(checkedTrackColor = colors.blue),
                     )
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -214,7 +214,7 @@ fun SettingsScreen(
                 supportingContent = {
                     Text(
                         if (prefs.useSystemAppearance) {
-                            "OneLoop follows your device appearance setting."
+                            "OneLoop UIv2 follows your device appearance setting."
                         } else if (prefs.useDarkMode) {
                             "Dark mode is enabled."
                         } else {
@@ -228,7 +228,7 @@ fun SettingsScreen(
                         onCheckedChange = {
                             scope.launch { preferences.setAppearance(it, prefs.useDarkMode) }
                         },
-                        colors = SwitchDefaults.colors(checkedTrackColor = colors.success),
+                        colors = SwitchDefaults.colors(checkedTrackColor = colors.blue),
                     )
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -242,7 +242,7 @@ fun SettingsScreen(
                         onCheckedChange = {
                             scope.launch { preferences.setAppearance(false, it) }
                         },
-                        colors = SwitchDefaults.colors(checkedTrackColor = colors.success),
+                        colors = SwitchDefaults.colors(checkedTrackColor = colors.blue),
                     )
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -252,7 +252,7 @@ fun SettingsScreen(
                 supportingContent = {
                     Text(
                         if (prefs.useMaterialNavigation) {
-                            "System Material navigation bar with a center add action."
+                            "System Material navigation bar (Android equivalent of Liquid Glass)."
                         } else {
                             "Floating capsule (pill) menu with center add button."
                         },
@@ -264,7 +264,7 @@ fun SettingsScreen(
                         onCheckedChange = {
                             scope.launch { preferences.setUseMaterialNavigation(it) }
                         },
-                        colors = SwitchDefaults.colors(checkedTrackColor = colors.success),
+                        colors = SwitchDefaults.colors(checkedTrackColor = colors.blue),
                     )
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),

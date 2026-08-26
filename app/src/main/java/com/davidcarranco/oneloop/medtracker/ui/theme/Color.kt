@@ -2,45 +2,57 @@ package com.davidcarranco.oneloop.medtracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ * WCAG 2.2 AA, color-blind safe: blue is primary, orange is warning,
+ * green is success only (never the global brand). Matches iOS AppTheme.
+ */
 object OneLoopColors {
-    val NavyLight = Color(0xFF0F141F)
-    val NavyDark = Color(0xFFF2F7FF)
+    val NavyLight = Color(0xFF171E2E)
+    val NavyDark = Color(0xFFF0F2FA)
 
-    val BlueLight = Color(0xFF0D47B8)
-    val BlueDark = Color(0xFF528AFF)
+    val BlueLight = Color(0xFF1F52B8)
+    val BlueDark = Color(0xFF8CB3FF)
 
-    val TealLight = Color(0xFF006B70)
-    val TealDark = Color(0xFF26C7B8)
+    val TealLight = Color(0xFF47597A)
+    val TealDark = Color(0xFFB2C2DB)
 
-    val LimeLight = Color(0xFF7ABD1F)
-    val LimeDark = Color(0xFFB3ED33)
+    val LimeLight = Color(0xFFD1E0FA)
+    val LimeDark = Color(0xFF2E477A)
 
-    val ScheduleSelectionTextLight = Color(0xFF0D1A29)
-    val ScheduleSelectionTextDark = Color(0xFF080D05)
+    val ScheduleSelectionTextLight = Color(0xFF171E2E)
+    val ScheduleSelectionTextDark = Color(0xFFF0F2FA)
 
-    val ActionTextLight = Color(0xFF0F2408)
-    val ActionTextDark = Color(0xFF0A1205)
+    val ActionTextLight = Color(0xFFFCFCFF)
+    val ActionTextDark = Color(0xFF121A2E)
 
-    val OrangeLight = Color(0xFFD13D0A)
-    val OrangeDark = Color(0xFFFF7A33)
+    val OrangeLight = Color(0xFFB86114)
+    val OrangeDark = Color(0xFFFFAD52)
 
-    val SoftBackgroundLight = Color(0xFFFFFFFF)
-    val SoftBackgroundDark = Color(0xFF090B11)
+    val SoftBackgroundLight = Color(0xFFF5F5F7)
+    val SoftBackgroundDark = Color(0xFF12141C)
 
-    val CardBackgroundLight = Color(0xFFE6EBF2)
-    val CardBackgroundDark = Color(0xFF171B24)
+    val CardBackgroundLight = Color(0xFFFFFFFF)
+    val CardBackgroundDark = Color(0xFF212633)
 
-    val ElevatedCardLight = Color(0xFFD6E0F0)
-    val ElevatedCardDark = Color(0xFF212633)
+    val ElevatedCardLight = Color(0xFFE6EBF5)
+    val ElevatedCardDark = Color(0xFF2E3647)
 
     val CardBorderLight = Color(0x1A000000)
-    val CardBorderDark = Color(0x1AFFFFFF)
+    val CardBorderDark = Color(0x24FFFFFF)
 
-    val MutedTextLight = Color(0xFF424D61)
-    val MutedTextDark = Color(0xFF9EABBF)
+    val FieldFillLight = Color(0xFFEDF0F7)
+    val FieldFillDark = Color(0xFF292E3D)
 
-    val SuccessLight = Color(0xFF2E8C33)
-    val SuccessDark = Color(0xFFB3ED33)
+    val MutedTextLight = Color(0xFF52617A)
+    val MutedTextDark = Color(0xFFADBAD1)
+
+    val SuccessLight = Color(0xFF1F7347)
+    val SuccessDark = Color(0xFF73D194)
+
+    val SplashFillLight = Color(0xFF1A2947)
+    val SplashFillDark = Color(0xFF141F38)
+
+    val SplashWordmark = Color(0xFFE6EDFA)
 }
 
 data class OneLoopPalette(
@@ -59,6 +71,8 @@ data class OneLoopPalette(
     val success: Color,
     val warning: Color,
     val fieldFill: Color,
+    val splashFill: Color,
+    val splashWordmark: Color,
 )
 
 val LightPalette = OneLoopPalette(
@@ -76,7 +90,9 @@ val LightPalette = OneLoopPalette(
     mutedText = OneLoopColors.MutedTextLight,
     success = OneLoopColors.SuccessLight,
     warning = OneLoopColors.OrangeLight,
-    fieldFill = Color(0xFFF0F2F8),
+    fieldFill = OneLoopColors.FieldFillLight,
+    splashFill = OneLoopColors.SplashFillLight,
+    splashWordmark = OneLoopColors.SplashWordmark,
 )
 
 val DarkPalette = OneLoopPalette(
@@ -94,5 +110,7 @@ val DarkPalette = OneLoopPalette(
     mutedText = OneLoopColors.MutedTextDark,
     success = OneLoopColors.SuccessDark,
     warning = OneLoopColors.OrangeDark,
-    fieldFill = Color(0xFF1F242E),
+    fieldFill = OneLoopColors.FieldFillDark,
+    splashFill = OneLoopColors.SplashFillDark,
+    splashWordmark = OneLoopColors.SplashWordmark,
 )

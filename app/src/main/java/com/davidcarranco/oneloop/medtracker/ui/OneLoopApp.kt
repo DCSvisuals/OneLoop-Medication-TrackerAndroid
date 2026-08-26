@@ -1,5 +1,11 @@
 package com.davidcarranco.oneloop.medtracker.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -186,8 +192,8 @@ private fun MainShell(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = onAdd,
-                    containerColor = colors.lime,
-                    contentColor = colors.scheduleSelectionText,
+                    containerColor = colors.blue,
+                    contentColor = colors.actionText,
                 ) {
                     Icon(Icons.Filled.Add, contentDescription = "Add medication")
                 }
@@ -265,19 +271,29 @@ private fun TabContent(
     onOpenDisclaimer: () -> Unit,
     onOpenPrivacy: () -> Unit,
 ) {
-    when (tab) {
-        AppTab.Today -> TodayScreen(store, showFloatingClearance, onAdd, onOpenMedication)
-        AppTab.Schedule -> ScheduleScreen(store, showFloatingClearance)
-        AppTab.History -> HistoryScreen(store, showFloatingClearance)
-        AppTab.Settings -> SettingsScreen(
-            store = store,
-            preferences = preferences,
-            supabase = supabase,
-            notificationScheduler = notificationScheduler,
-            showFloatingClearance = showFloatingClearance,
-            onOpenAccount = onOpenAccount,
-            onOpenDisclaimer = onOpenDisclaimer,
-            onOpenPrivacy = onOpenPrivacy,
-        )
+    AnimatedContent(
+        targetState = tab,
+        transitionSpec = {
+            val forward = targetState.ordinal > initialState.ordinal
+            (slideInHorizontally { full -> if (forward) full else -full } + fadeIn()) togetherWith
+                (slideOutHorizontally { full -> if (forward) -full else full } + fadeOut())
+        },
+        label = "tab",
+    ) { current ->
+        when (current) {
+            AppTab.Today -> TodayScreen(store, showFloatingClearance, onAdd, onOpenMedication)
+            AppTab.Schedule -> ScheduleScreen(store, showFloatingClearance)
+            AppTab.History -> HistoryScreen(store, showFloatingClearance)
+            AppTab.Settings -> SettingsScreen(
+                store = store,
+                preferences = preferences,
+                supabase = supabase,
+                notificationScheduler = notificationScheduler,
+                showFloatingClearance = showFloatingClearance,
+                onOpenAccount = onOpenAccount,
+                onOpenDisclaimer = onOpenDisclaimer,
+                onOpenPrivacy = onOpenPrivacy,
+            )
+        }
     }
 }

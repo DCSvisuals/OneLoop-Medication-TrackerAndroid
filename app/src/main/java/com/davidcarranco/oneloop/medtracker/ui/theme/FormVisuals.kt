@@ -14,7 +14,7 @@ import com.davidcarranco.oneloop.medtracker.data.model.Medication
 fun Medication.Form.tint(): Color = when (this) {
     Medication.Form.PILL -> OneLoopTheme.colors.blue
     Medication.Form.INJECTION -> OneLoopTheme.colors.warning
-    Medication.Form.CREAM -> Color(0xFF9C27B0)
+    Medication.Form.CREAM -> OneLoopTheme.colors.teal
 }
 
 fun Medication.Form.icon(): ImageVector = when (this) {
@@ -28,5 +28,5 @@ fun DoseStatus.tint(): Color = when (this) {
     DoseStatus.TAKEN -> OneLoopTheme.colors.success
     DoseStatus.DUE_NOW -> OneLoopTheme.colors.orange
     DoseStatus.UPCOMING -> OneLoopTheme.colors.blue
-    DoseStatus.MISSED -> Color(0xFFE53935)
+    DoseStatus.MISSED -> OneLoopTheme.colors.warning
 }

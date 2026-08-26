@@ -21,7 +21,7 @@ data class WidgetMedicationData(
     companion object {
         val empty = WidgetMedicationData(
             medicationName = "No medications",
-            dosage = "Add a medication in OneLoop",
+            dosage = "Add a medication in OneLoop UIv2",
             reminderTime = Instant.now(),
             completedCount = 0,
             totalCount = 0,

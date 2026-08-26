@@ -312,17 +312,30 @@ class MedicationStore(
         markRemoved: Boolean = false,
     ) {
         val existing = _historyEntries.value.firstOrNull { it.medicationID == medication.id }
+        val now = clock()
+        val today = now.atZone(zone).toLocalDate()
+        val doseCount = max(1, medication.dosesPerDay(today, zone))
+        val interval = medication.intervalHours(today, zone)
+        val times = (0 until doseCount).map { index ->
+            medication.doseTime(index, today, interval, zone)
+        }
         upsertHistoryEntry(
             MedicationHistoryEntry(
                 id = existing?.id ?: java.util.UUID.randomUUID().toString(),
                 medicationID = medication.id,
-                day = existing?.day ?: clock(),
                 name = medication.name,
                 dosage = medication.dosage,
                 form = medication.form,
                 instructions = medication.instructions,
-                doses = emptyList(),
+                startDate = medication.startDate,
+                dosesPerDay = doseCount,
+                intervalHours = interval,
+                firstDoseTime = medication.firstDoseTime,
+                scheduledTimes = times,
                 wasRemovedFromSchedule = markRemoved,
+                recordedAt = now,
+                day = existing?.day ?: now,
+                doses = emptyList(),
             ),
         )
     }
@@ -333,29 +346,45 @@ class MedicationStore(
         return entries
             .groupBy { it.medicationID }
             .map { (_, group) ->
-                val newest = group.maxBy { it.day }
+                val newest = group.maxBy { it.recordedAt.takeUnless { instant -> instant == Instant.EPOCH } ?: it.day }
                 newest.copy(
                     doses = emptyList(),
                     wasRemovedFromSchedule = group.any { it.wasRemovedFromSchedule },
+                    startDate = newest.startDate.takeUnless { it == Instant.EPOCH }
+                        ?: group.minBy { it.day }.day,
+                    recordedAt = newest.recordedAt.takeUnless { it == Instant.EPOCH } ?: newest.day,
                     day = group.minBy { it.day }.day,
                 )
             }
             .sortedWith(
-                compareBy<MedicationHistoryEntry> { it.name.lowercase() }
-                    .thenBy { it.medicationID },
+                compareByDescending<MedicationHistoryEntry> { it.recordedAt }
+                    .thenBy { it.name.lowercase() },
             )
     }
 
     private fun upsertHistoryEntry(entry: MedicationHistoryEntry) {
         val current = _historyEntries.value
         val existingIndex = current.indexOfFirst { it.medicationID == entry.medicationID }
-        val next = if (existingIndex >= 0) {
-            current.toMutableList().also { it[existingIndex] = entry }
+        val merged = if (existingIndex >= 0) {
+            val previous = current[existingIndex]
+            val live = _medications.value.any { it.id == entry.medicationID }
+            val removedFlag = if (entry.wasRemovedFromSchedule) {
+                true
+            } else {
+                previous.wasRemovedFromSchedule && !live
+            }
+            current.toMutableList().also {
+                it[existingIndex] = entry.copy(
+                    id = previous.id,
+                    wasRemovedFromSchedule = removedFlag,
+                )
+            }
         } else {
             current + entry
-        }.sortedWith(
-            compareBy<MedicationHistoryEntry> { it.name.lowercase() }
-                .thenBy { it.medicationID },
+        }
+        val next = merged.sortedWith(
+            compareByDescending<MedicationHistoryEntry> { it.recordedAt }
+                .thenBy { it.name.lowercase() },
         )
         _historyEntries.value = next
     }
@@ -424,7 +453,7 @@ class MedicationStore(
             WidgetMedicationData(
                 medicationName = if (_medications.value.isEmpty()) "No medications" else "All medications taken",
                 dosage = if (_medications.value.isEmpty()) {
-                    "Add a medication in OneLoop"
+                    "Add a medication in OneLoop UIv2"
                 } else {
                     "Great job for today"
                 },

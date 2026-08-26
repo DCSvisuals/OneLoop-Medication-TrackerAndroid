@@ -16,9 +16,9 @@ private fun paletteToScheme(palette: OneLoopPalette, dark: Boolean): ColorScheme
     val scheme = if (dark) darkColorScheme() else lightColorScheme()
     return scheme.copy(
         primary = palette.blue,
-        onPrimary = Color.White,
-        secondary = palette.lime,
-        onSecondary = palette.scheduleSelectionText,
+        onPrimary = palette.actionText,
+        secondary = palette.blue,
+        onSecondary = palette.actionText,
         tertiary = palette.teal,
         background = palette.softBackground,
         onBackground = palette.navy,

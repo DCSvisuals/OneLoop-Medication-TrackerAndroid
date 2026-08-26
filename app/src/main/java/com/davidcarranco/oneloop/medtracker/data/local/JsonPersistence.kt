@@ -16,7 +16,8 @@ class JsonPersistence(context: Context) {
 
     private val folder: File = File(context.filesDir, "OneLoop").apply { mkdirs() }
     private val medicationsFile = File(folder, "medications.json")
-    private val historyFile = File(folder, "medicationHistory.json")
+    private val historyFile = File(folder, "medicationInfoHistory.json")
+    private val legacyHistoryFile = File(folder, "medicationHistory.json")
     private val resetDateFile = File(folder, "lastDoseResetDate.txt")
 
     private val json = Json {
@@ -48,11 +49,15 @@ class JsonPersistence(context: Context) {
     }
 
     fun loadHistory(): List<MedicationHistoryEntry> {
-        if (!historyFile.exists()) return emptyList()
+        val source = when {
+            historyFile.exists() -> historyFile
+            legacyHistoryFile.exists() -> legacyHistoryFile
+            else -> return emptyList()
+        }
         return runCatching {
             json.decodeFromString(
                 ListSerializer(MedicationHistoryEntry.serializer()),
-                historyFile.readText(),
+                source.readText(),
             )
         }.getOrElse { emptyList() }
     }

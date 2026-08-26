@@ -38,6 +38,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="auth-callback"
+                    android:scheme="oneloopuiv2" />
+                <data
+                    android:host="auth-callback"
                     android:scheme="oneloop" />
             </intent-filter>
         </activity>

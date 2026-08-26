@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,7 +41,9 @@ import androidx.compose.ui.unit.sp
 import com.davidcarranco.oneloop.medtracker.data.model.ScheduledDose
 import com.davidcarranco.oneloop.medtracker.data.repository.MedicationStore
 import com.davidcarranco.oneloop.medtracker.ui.components.FloatingMenuSpacer
+import com.davidcarranco.oneloop.medtracker.ui.components.GlassCircleButton
 import com.davidcarranco.oneloop.medtracker.ui.components.OneLoopCard
+import com.davidcarranco.oneloop.medtracker.ui.components.OneLoopPageHeader
 import com.davidcarranco.oneloop.medtracker.ui.theme.OneLoopTheme
 import com.davidcarranco.oneloop.medtracker.ui.theme.icon
 import com.davidcarranco.oneloop.medtracker.ui.theme.tint
@@ -73,6 +76,7 @@ fun ScheduleScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.softBackground)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -102,30 +106,18 @@ fun ScheduleScreen(
 
 @Composable
 private fun PageHeader() {
-    val colors = OneLoopTheme.colors
-    Row(verticalAlignment = Alignment.Bottom) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Text(
-                "OneLoop",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = colors.blue,
-                letterSpacing = 1.2.sp,
+    OneLoopPageHeader(
+        eyebrow = "OneLoop UIv2",
+        title = "Schedule",
+        subtitle = "Plan your doses with confidence.",
+        applyStatusBarPadding = false,
+        trailing = {
+            GlassCircleButton(
+                icon = Icons.Filled.CalendarMonth,
+                contentDescription = "Schedule",
             )
-            Text("Schedule", fontSize = 38.sp, fontWeight = FontWeight.Bold, color = colors.navy)
-            Text("Plan your doses with confidence.", color = colors.mutedText)
-        }
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(colors.cardBackground)
-                .border(1.dp, colors.cardBorder, RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(Icons.Filled.CalendarMonth, null, tint = colors.blue)
-        }
-    }
+        },
+    )
 }
 
 @Composable

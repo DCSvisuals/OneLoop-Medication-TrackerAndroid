@@ -189,7 +189,10 @@ class SupabaseManager(
     }
 
     suspend fun handleAuthCallback(uri: Uri) {
-        if (uri.scheme?.equals(SupabaseConfig.AUTH_CALLBACK_SCHEME, ignoreCase = true) != true) {
+        val scheme = uri.scheme.orEmpty()
+        val isCallback = scheme.equals(SupabaseConfig.AUTH_CALLBACK_SCHEME, ignoreCase = true) ||
+            scheme.equals(SupabaseConfig.LEGACY_AUTH_CALLBACK_SCHEME, ignoreCase = true)
+        if (!isCallback) {
             return
         }
         val fragment = uri.encodedFragment.orEmpty()
