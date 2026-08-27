@@ -5,7 +5,7 @@ object SupabaseConfig {
     const val PUBLISHABLE_KEY = "sb_publishable_43Gtyki76s6iUMRhPKBfrA_Mz2qZNMa"
 
     const val AUTH_REDIRECT_URL =
-        "https://dcsvisuals.github.io/OneLoop-MedicationTracker-PrivacyPolicy/auth-callback/"
+        "https://dcsvisuals.github.io/OneLoop/auth-callback/"
 
     const val AUTH_CALLBACK_SCHEME = "oneloopuiv2"
     const val LEGACY_AUTH_CALLBACK_SCHEME = "oneloop"

@@ -9,7 +9,7 @@ Use this to ship a beta APK/AAB to testers. The app ID is
 2. Create app → **OneLoop UIv2**
 3. Category: **Health & Fitness** (not Medical)
 4. Fill privacy policy URL:
-   `https://dcsvisuals.github.io/OneLoop-MedicationTracker-PrivacyPolicy/privacy/`
+   `https://dcsvisuals.github.io/OneLoop/PrivacyPolicy/`
 5. Complete **App content**: privacy policy, medical/health disclaimer, target audience (not children), Data safety (on-device medication data; optional account email)
 
 ## 2. Create an upload keystore (once)

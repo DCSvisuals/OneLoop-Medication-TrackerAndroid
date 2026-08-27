@@ -12,11 +12,11 @@ object AppInfo {
         "mailto:$SUPPORT_EMAIL?subject=OneLoop%20UIv2%20Support"
 
     const val HOME_URL =
-        "https://dcsvisuals.github.io/OneLoop-MedicationTracker-PrivacyPolicy/"
+        "https://dcsvisuals.github.io/OneLoop/home/"
     const val PRIVACY_POLICY_URL =
-        "https://dcsvisuals.github.io/OneLoop-MedicationTracker-PrivacyPolicy/privacy/"
+        "https://dcsvisuals.github.io/OneLoop/PrivacyPolicy/"
     const val SUPPORT_URL =
-        "https://dcsvisuals.github.io/OneLoop-MedicationTracker-PrivacyPolicy/support/"
+        "https://dcsvisuals.github.io/OneLoop/home/"
 
     const val MEDICAL_DISCLAIMER_SHORT =
         "OneLoop UIv2 is a personal medication reminder tool. " +
