@@ -1,4 +1,4 @@
-# OneLoop UIv2 — Play Console closed / internal testing
+# OneLoop — Play Console closed / internal testing
 
 Use this to ship a beta APK/AAB to testers. The app ID is
 `com.davidcarranco.oneloop.medtracker` (debug builds add `.debug`).
@@ -6,7 +6,7 @@ Use this to ship a beta APK/AAB to testers. The app ID is
 ## 1. Create a Play Console app (once)
 
 1. Open [Google Play Console](https://play.google.com/console)
-2. Create app → **OneLoop UIv2**
+2. Create app → **OneLoop - Medication Tracker**
 3. Category: **Health & Fitness** (not Medical)
 4. Fill privacy policy URL:
    `https://dcsvisuals.github.io/OneLoop/PrivacyPolicy/`

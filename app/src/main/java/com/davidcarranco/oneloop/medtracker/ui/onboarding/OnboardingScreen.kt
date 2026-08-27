@@ -245,25 +245,17 @@ private fun SplashPage(
             .fillMaxSize()
             .background(colors.splashFill)
             .clickable(onClick = onContinue)
-            .semantics { contentDescription = "OneLoop UIv2" },
+            .semantics { contentDescription = "OneLoop" },
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                "ONELOOP",
-                fontSize = 42.sp,
-                fontWeight = FontWeight.Light,
-                letterSpacing = 6.sp,
-                color = colors.splashWordmark,
-            )
-            Text(
-                "UIv2",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                letterSpacing = 4.sp,
-                color = colors.splashWordmark.copy(alpha = 0.85f),
-            )
-        }
+        Image(
+            painter = painterResource(R.drawable.splash_logo),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth(0.72f)
+                .padding(horizontal = 36.dp),
+        )
     }
 }
 
@@ -352,14 +344,14 @@ private fun NotificationsPage(alreadyGranted: Boolean) {
             modifier = Modifier.padding(horizontal = 28.dp),
         )
         Text(
-            "Allow notifications so OneLoop UIv2 can remind you at every scheduled dose. Reminders stay on this phone.",
+            "Allow notifications so OneLoop can remind you at every scheduled dose. Reminders stay on this phone.",
             color = colors.teal,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 10.dp),
         )
         if (alreadyGranted || manager.areNotificationsEnabled()) {
             Text(
-                "Notifications are already allowed for OneLoop UIv2.",
+                "Notifications are already allowed for OneLoop.",
                 fontSize = 13.sp,
                 color = colors.teal,
                 modifier = Modifier
@@ -374,7 +366,7 @@ private fun NotificationsPage(alreadyGranted: Boolean) {
             PackageManager.PERMISSION_GRANTED
         ) {
             Text(
-                "Notifications are turned off for OneLoop UIv2 in Android Settings. You can enable them there, or continue and turn them on later.",
+                "Notifications are turned off for OneLoop in Android Settings. You can enable them there, or continue and turn them on later.",
                 fontSize = 13.sp,
                 color = colors.warning,
                 modifier = Modifier
@@ -410,7 +402,7 @@ private fun PolicyPage(
             fontFamily = FontFamily.Serif,
             color = colors.navy,
         )
-        Text("Please read carefully before using OneLoop UIv2.", color = colors.teal)
+        Text("Please read carefully before using OneLoop.", color = colors.teal)
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -431,7 +423,7 @@ private fun PolicyPage(
         RowToggle(
             checked = accepted,
             onChange = onAcceptedChange,
-            title = "I understand OneLoop UIv2 is a personal reminder tool, not a medical device or source of medical advice, and that optional account data may be stored with Supabase.",
+            title = "I understand OneLoop is a personal reminder tool, not a medical device or source of medical advice, and that optional account data may be stored with Supabase.",
         )
     }
 }

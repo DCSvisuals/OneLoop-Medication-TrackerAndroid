@@ -161,7 +161,7 @@ fun SettingsScreen(
                 supportingContent = {
                     Text(
                         if (notificationsDenied) {
-                            "Notifications are turned off for OneLoop UIv2 in Android Settings. Enable them to receive dose reminders."
+                            "Notifications are turned off for OneLoop in Android Settings. Enable them to receive dose reminders."
                         } else {
                             "Receive a reminder at every scheduled medication dose."
                         },
@@ -214,7 +214,7 @@ fun SettingsScreen(
                 supportingContent = {
                     Text(
                         if (prefs.useSystemAppearance) {
-                            "OneLoop UIv2 follows your device appearance setting."
+                            "OneLoop follows your device appearance setting."
                         } else if (prefs.useDarkMode) {
                             "Dark mode is enabled."
                         } else {

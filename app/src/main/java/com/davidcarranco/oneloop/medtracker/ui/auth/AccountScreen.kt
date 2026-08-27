@@ -209,7 +209,7 @@ fun AccountScreen(
             onDismissRequest = { confirmDelete = false },
             title = { Text("Delete account?") },
             text = {
-                Text("This permanently deletes your OneLoop UIv2 cloud account and backed-up medications. Medications already saved on this device are not removed. This cannot be undone.")
+                Text("This permanently deletes your OneLoop cloud account and backed-up medications. Medications already saved on this device are not removed. This cannot be undone.")
             },
             confirmButton = {
                 TextButton(

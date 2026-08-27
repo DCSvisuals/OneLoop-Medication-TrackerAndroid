@@ -107,7 +107,7 @@ fun ScheduleScreen(
 @Composable
 private fun PageHeader() {
     OneLoopPageHeader(
-        eyebrow = "OneLoop UIv2",
+        eyebrow = "OneLoop",
         title = "Schedule",
         subtitle = "Plan your doses with confidence.",
         applyStatusBarPadding = false,

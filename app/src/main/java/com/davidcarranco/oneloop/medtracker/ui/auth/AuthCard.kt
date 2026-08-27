@@ -108,14 +108,6 @@ fun AuthCard(
                 letterSpacing = 3.sp,
                 color = colors.navy,
             )
-            Text(
-                "uiv2",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = FontFamily.Serif,
-                letterSpacing = 3.sp,
-                color = colors.navy,
-            )
         }
         Column(
             modifier = Modifier

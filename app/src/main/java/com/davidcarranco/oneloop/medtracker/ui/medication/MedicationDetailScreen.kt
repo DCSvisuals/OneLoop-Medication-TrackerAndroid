@@ -175,7 +175,7 @@ fun MedicationDetailScreen(
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
             title = { Text("Remove ${medication.name}?") },
-            text = { Text("This removes the medication and its reminder schedule from OneLoop UIv2.") },
+            text = { Text("This removes the medication and its reminder schedule from OneLoop.") },
             confirmButton = {
                 TextButton(
                     onClick = {

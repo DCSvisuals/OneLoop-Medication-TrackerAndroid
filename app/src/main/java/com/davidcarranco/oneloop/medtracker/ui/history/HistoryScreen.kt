@@ -65,7 +65,7 @@ fun HistoryScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         OneLoopPageHeader(
-            eyebrow = "OneLoop UIv2",
+            eyebrow = "OneLoop",
             title = "History",
             subtitle = "Saved medication details — kept even after you remove them from your schedule.",
             applyStatusBarPadding = false,

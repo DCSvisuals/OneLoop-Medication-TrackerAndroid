@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OneLoop UIv2</string>
+    <string name="app_name">OneLoop</string>
     <string name="widget_description">View your next medication and today\'s progress.</string>
     <string name="widget_label">Medication Progress</string>
 </resources>

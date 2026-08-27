@@ -453,7 +453,7 @@ class MedicationStore(
             WidgetMedicationData(
                 medicationName = if (_medications.value.isEmpty()) "No medications" else "All medications taken",
                 dosage = if (_medications.value.isEmpty()) {
-                    "Add a medication in OneLoop UIv2"
+                    "Add a medication in OneLoop"
                 } else {
                     "Great job for today"
                 },
