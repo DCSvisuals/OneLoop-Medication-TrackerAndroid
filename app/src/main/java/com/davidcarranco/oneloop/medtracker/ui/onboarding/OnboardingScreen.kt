@@ -1,8 +1,6 @@
 package com.davidcarranco.oneloop.medtracker.ui.onboarding
 
 import android.Manifest
-import android.app.NotificationManager
-import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -48,12 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.davidcarranco.oneloop.medtracker.R
 import com.davidcarranco.oneloop.medtracker.data.AppInfo
 import com.davidcarranco.oneloop.medtracker.data.preferences.UserPreferences
 import com.davidcarranco.oneloop.medtracker.data.remote.SupabaseManager
 import com.davidcarranco.oneloop.medtracker.notifications.DoseNotificationScheduler
+import com.davidcarranco.oneloop.medtracker.notifications.needsNotificationPermissionRequest
+import com.davidcarranco.oneloop.medtracker.notifications.notificationsAreEnabled
 import com.davidcarranco.oneloop.medtracker.ui.auth.AuthCard
 import com.davidcarranco.oneloop.medtracker.ui.components.PageDots
 import com.davidcarranco.oneloop.medtracker.ui.components.PrimaryButton
@@ -86,7 +85,7 @@ fun OnboardingScreen(
     var didAutoAdvanceSplash by remember { mutableStateOf(false) }
 
     val notificationsAlreadyAllowed = remember {
-        context.getSystemService(NotificationManager::class.java).areNotificationsEnabled()
+        notificationsAreEnabled(context)
     }
 
     LaunchedEffect(signedIn) { if (signedIn) onFinished() }
@@ -111,23 +110,20 @@ fun OnboardingScreen(
     }
 
     fun handleAllowNotifications() {
-        val manager = context.getSystemService(NotificationManager::class.java)
-        if (manager.areNotificationsEnabled()) {
+        if (notificationsAreEnabled(context)) {
             scope.launch {
                 preferences.setNotificationsEnabled(true)
                 pagerState.animateScrollToPage(PAGE_POLICY)
             }
             return
         }
-        if (!manager.areNotificationsEnabled() &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            context.startActivity(notificationScheduler.appNotificationSettingsIntent())
+        if (needsNotificationPermissionRequest(context)) {
+            requestingNotifications = true
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             return
         }
-        requestingNotifications = true
-        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        context.startActivity(notificationScheduler.appNotificationSettingsIntent())
+        scope.launch { pagerState.animateScrollToPage(PAGE_POLICY) }
     }
 
     fun handleContinue() {
@@ -314,8 +310,8 @@ private fun PhotoStoryPage(
 private fun NotificationsPage(alreadyGranted: Boolean) {
     val colors = OneLoopTheme.colors
     val context = LocalContext.current
-    val manager = context.getSystemService(NotificationManager::class.java)
-    val denied = !manager.areNotificationsEnabled() && !alreadyGranted
+    val enabled = notificationsAreEnabled(context)
+    val denied = !enabled && !alreadyGranted
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -349,7 +345,7 @@ private fun NotificationsPage(alreadyGranted: Boolean) {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 10.dp),
         )
-        if (alreadyGranted || manager.areNotificationsEnabled()) {
+        if (alreadyGranted || enabled) {
             Text(
                 "Notifications are already allowed for OneLoop.",
                 fontSize = 13.sp,
@@ -361,10 +357,7 @@ private fun NotificationsPage(alreadyGranted: Boolean) {
                     .background(colors.elevatedCard)
                     .padding(14.dp),
             )
-        } else if (denied &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
+        } else if (denied) {
             Text(
                 "Notifications are turned off for OneLoop in Android Settings. You can enable them there, or continue and turn them on later.",
                 fontSize = 13.sp,

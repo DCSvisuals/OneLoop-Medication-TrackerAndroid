@@ -21,8 +21,9 @@ This repository’s **main** branch is the UIv2 redesign. The previous Android a
 
 - Android Studio Otter 3 / compatible with AGP 9.3
 - JDK 17+ (Android Studio bundled JBR works)
-- Android 15 (API 35) or newer
+- Android 12 (API 31) or newer
 - Validated form-factor targets:
+  - Android 12–14 phones, including MyOS 12
   - Google Pixel 8 and newer
   - Samsung Galaxy S22 family through S26 family (running Android 15+)
   - Samsung Galaxy A series from the 2023 lineup and newer (running Android 15+)
@@ -32,7 +33,7 @@ This repository’s **main** branch is the UIv2 redesign. The previous Android a
 1. Open the `Android` folder
 2. Let Gradle sync
 3. Select the **app** run configuration
-4. Run on a Pixel 8+ emulator/device, or a Samsung device on Android 15+
+4. Run on an Android 12+ emulator/device
 
 Command line:
 
@@ -70,7 +71,7 @@ Add `oneloopuiv2://auth-callback` to **Supabase → Authentication → URL Confi
 
 - **Pixel 8+:** gesture navigation, punch-hole cutout, predictive back
 - **Samsung One UI:** exact alarms and notification permission are requested; boot + timezone receivers reschedule reminders after reboot
-- **minSdk 35** keeps the app on Android 15 behavior (edge-to-edge, 16 KB page size ready, per-app language)
+- **minSdk 31** supports Android 12 (MyOS 12). Runtime notification permission is requested only on Android 13+.
 
 ## License
 

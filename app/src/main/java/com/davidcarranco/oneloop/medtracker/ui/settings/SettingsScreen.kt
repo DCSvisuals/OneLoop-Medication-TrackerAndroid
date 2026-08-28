@@ -1,9 +1,6 @@
 package com.davidcarranco.oneloop.medtracker.ui.settings
 
-import android.Manifest
-import android.app.NotificationManager
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,13 +43,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.davidcarranco.oneloop.medtracker.data.AppInfo
 import com.davidcarranco.oneloop.medtracker.data.preferences.UserPreferences
 import com.davidcarranco.oneloop.medtracker.data.remote.SupabaseConfig
 import com.davidcarranco.oneloop.medtracker.data.remote.SupabaseManager
 import com.davidcarranco.oneloop.medtracker.data.repository.MedicationStore
 import com.davidcarranco.oneloop.medtracker.notifications.DoseNotificationScheduler
+import com.davidcarranco.oneloop.medtracker.notifications.needsNotificationPermissionRequest
+import com.davidcarranco.oneloop.medtracker.notifications.notificationsAreEnabled
 import com.davidcarranco.oneloop.medtracker.ui.components.FloatingMenuSpacer
 import com.davidcarranco.oneloop.medtracker.ui.theme.OneLoopTheme
 import kotlinx.coroutines.launch
@@ -89,8 +87,7 @@ fun SettingsScreen(
     var notificationsDenied by remember { mutableStateOf(false) }
 
     fun refreshNotificationState() {
-        val manager = context.getSystemService(NotificationManager::class.java)
-        notificationsDenied = !manager.areNotificationsEnabled()
+        notificationsDenied = !notificationsAreEnabled(context)
         if (prefs.notificationsEnabled && notificationsDenied) {
             scope.launch { preferences.setNotificationsEnabled(false) }
         }
@@ -173,11 +170,9 @@ fun SettingsScreen(
                         onCheckedChange = { enabled ->
                             scope.launch {
                                 if (enabled) {
-                                    val granted = ContextCompat.checkSelfPermission(
-                                        context,
-                                        Manifest.permission.POST_NOTIFICATIONS,
-                                    ) == PackageManager.PERMISSION_GRANTED
-                                    if (granted) {
+                                    if (needsNotificationPermissionRequest(context)) {
+                                        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                                    } else if (notificationsAreEnabled(context)) {
                                         preferences.setNotificationsEnabled(true)
                                         if (!notificationScheduler.canScheduleExactAlarms()) {
                                             context.startActivity(
@@ -186,7 +181,10 @@ fun SettingsScreen(
                                         }
                                         notificationScheduler.rescheduleAll(store.medications.value)
                                     } else {
-                                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        showSettingsHint = true
+                                        context.startActivity(
+                                            notificationScheduler.appNotificationSettingsIntent(),
+                                        )
                                     }
                                 } else {
                                     preferences.setNotificationsEnabled(false)

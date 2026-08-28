@@ -69,7 +69,7 @@ Internal testing is usually available within minutes after processing. Testers m
 - Notifications allow / deny / Open Settings
 - Light / dark + floating capsule vs Material navigation
 - Home-screen widget
-- Pixel 8+ and a Samsung One UI device on Android 15+
+- An Android 12 (API 31) phone such as MyOS 12, plus Pixel 8+ / Samsung on Android 15+ if available
 
 ## 7. Review notes (paste into Play Console)
 
