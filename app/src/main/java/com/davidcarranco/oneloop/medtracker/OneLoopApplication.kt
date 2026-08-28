@@ -1,6 +1,7 @@
 package com.davidcarranco.oneloop.medtracker
 
 import android.app.Application
+import com.davidcarranco.oneloop.medtracker.data.crypto.MedicationNameCipher
 import com.davidcarranco.oneloop.medtracker.data.local.JsonPersistence
 import com.davidcarranco.oneloop.medtracker.data.local.WidgetDataStore
 import com.davidcarranco.oneloop.medtracker.data.preferences.UserPreferences
@@ -28,12 +29,13 @@ class OneLoopApplication : Application() {
         instance = this
         preferences = UserPreferences(this)
         notificationScheduler = DoseNotificationScheduler(this, preferences).also { it.createChannel() }
+        val nameCipher = MedicationNameCipher(this)
         medicationStore = MedicationStore(
-            persistence = JsonPersistence(this),
+            persistence = JsonPersistence(this, nameCipher),
             widgetDataStore = WidgetDataStore(this),
             notificationScheduler = notificationScheduler,
         )
-        supabase = SupabaseManager(this, preferences)
+        supabase = SupabaseManager(this, preferences, nameCipher)
         val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         medicationStore.onMedicationsChanged = {
             appScope.launch { supabase.pushMedications(medicationStore, quiet = true) }

@@ -1,6 +1,7 @@
 package com.davidcarranco.oneloop.medtracker.data.local
 
 import android.content.Context
+import com.davidcarranco.oneloop.medtracker.data.crypto.MedicationNameCipher
 import com.davidcarranco.oneloop.medtracker.data.model.IsoInstantSerializer
 import com.davidcarranco.oneloop.medtracker.data.model.Medication
 import com.davidcarranco.oneloop.medtracker.data.model.MedicationHistoryEntry
@@ -12,7 +13,10 @@ import java.io.File
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-class JsonPersistence(context: Context) {
+class JsonPersistence(
+    context: Context,
+    private val nameCipher: MedicationNameCipher,
+) {
 
     private val folder: File = File(context.filesDir, "OneLoop").apply { mkdirs() }
     private val medicationsFile = File(folder, "medications.json")
@@ -36,14 +40,15 @@ class JsonPersistence(context: Context) {
             json.decodeFromString(
                 ListSerializer(Medication.serializer()),
                 medicationsFile.readText(),
-            )
+            ).map { it.copy(name = nameCipher.decryptLocal(it.name)) }
         }.getOrElse { emptyList() }
     }
 
     fun saveMedications(medications: List<Medication>) {
+        val sealed = medications.map { it.copy(name = nameCipher.encryptLocal(it.name)) }
         val payload = json.encodeToString(
             ListSerializer(Medication.serializer()),
-            medications,
+            sealed,
         )
         writeAtomically(medicationsFile, payload)
     }
@@ -58,14 +63,15 @@ class JsonPersistence(context: Context) {
             json.decodeFromString(
                 ListSerializer(MedicationHistoryEntry.serializer()),
                 source.readText(),
-            )
+            ).map { it.copy(name = nameCipher.decryptLocal(it.name)) }
         }.getOrElse { emptyList() }
     }
 
     fun saveHistory(entries: List<MedicationHistoryEntry>) {
+        val sealed = entries.map { it.copy(name = nameCipher.encryptLocal(it.name)) }
         val payload = json.encodeToString(
             ListSerializer(MedicationHistoryEntry.serializer()),
-            entries,
+            sealed,
         )
         writeAtomically(historyFile, payload)
     }

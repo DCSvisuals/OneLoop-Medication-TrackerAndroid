@@ -26,6 +26,7 @@ class UserPreferences(private val context: Context) {
             useMaterialNavigation = prefs[Keys.USE_MATERIAL_NAV] ?: false,
             notificationsEnabled = prefs[Keys.NOTIFICATIONS_ENABLED] ?: false,
             rememberedEmail = prefs[Keys.REMEMBERED_EMAIL].orEmpty(),
+            hasHealthDataConsent = prefs[Keys.HEALTH_DATA_CONSENT] ?: false,
         )
     }
 
@@ -60,6 +61,12 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    suspend fun setHealthDataConsent(granted: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.HEALTH_DATA_CONSENT] = granted
+        }
+    }
+
     suspend fun setRememberedEmail(email: String?) {
         context.dataStore.edit { prefs ->
             if (email.isNullOrBlank()) {
@@ -78,6 +85,7 @@ class UserPreferences(private val context: Context) {
         val useMaterialNavigation: Boolean,
         val notificationsEnabled: Boolean,
         val rememberedEmail: String,
+        val hasHealthDataConsent: Boolean = false,
     )
 
     private object Keys {
@@ -88,5 +96,6 @@ class UserPreferences(private val context: Context) {
         val USE_MATERIAL_NAV = booleanPreferencesKey("useMaterialNavigation")
         val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notificationsEnabled")
         val REMEMBERED_EMAIL = stringPreferencesKey("rememberedEmail")
+        val HEALTH_DATA_CONSENT = booleanPreferencesKey("hasConsentedHealthDataProcessing")
     }
 }

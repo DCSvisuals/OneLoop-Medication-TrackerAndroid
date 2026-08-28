@@ -48,7 +48,7 @@ OneLoop stores information you enter about medications and dosing schedules, inc
 2. Where data is stored
 Medication data is stored on your device (app-private storage) by default. Widget summary data may be shared with the OneLoop home-screen widget through app storage on the same device.
 
-Optional cloud storage (Supabase): When you register or sign in and use cloud backup/sync, account and medication information you upload is stored in Supabase (hosted cloud infrastructure used for authentication and database storage). Access to cloud rows is restricted with Row Level Security so only your signed-in account can access your data. Sign-in providers you choose (such as Google) process authentication according to their own policies.
+Optional cloud storage (Supabase): When you register or sign in and use cloud backup/sync, account and medication information you upload is stored in Supabase (hosted cloud infrastructure used for authentication and database storage). Medication names are encrypted on this device with AES-256-GCM before they are saved locally or sent to Supabase, so they are not stored in readable form in the cloud database. Transport uses HTTPS. Access to cloud rows is restricted with Row Level Security so only your signed-in account can access your data. Creating an account requires explicit consent to process health-related medication data (GDPR). You can use OneLoop without an account. Sign-in providers you choose (such as Google) process authentication according to their own policies.
 
 3. Notifications
 If you enable medication reminders, OneLoop schedules local notifications on your device. Notification permission is optional and can be changed in Android Settings.

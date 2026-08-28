@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import com.davidcarranco.oneloop.medtracker.data.crypto.MedicationNameCipher
 import com.davidcarranco.oneloop.medtracker.data.model.Medication
 import com.davidcarranco.oneloop.medtracker.data.preferences.UserPreferences
 import com.davidcarranco.oneloop.medtracker.data.repository.MedicationStore
@@ -39,6 +40,7 @@ import kotlinx.serialization.json.put
 class SupabaseManager(
     private val context: Context,
     private val preferences: UserPreferences,
+    private val nameCipher: MedicationNameCipher,
 ) {
     private val json = Json {
         ignoreUnknownKeys = true
@@ -123,9 +125,17 @@ class SupabaseManager(
                 put("email", email.trim())
                 put("password", password)
                 val name = fullName?.trim().orEmpty()
-                if (name.isNotEmpty()) {
-                    put("data", buildJsonObject { put("full_name", name) })
-                }
+                put(
+                    "data",
+                    buildJsonObject {
+                        if (name.isNotEmpty()) put("full_name", name)
+                        put("health_data_consent", true)
+                        put(
+                            "health_data_consent_at",
+                            java.time.Instant.now().toString(),
+                        )
+                    },
+                )
             }
             val response = http.post("${SupabaseConfig.PROJECT_URL}/auth/v1/signup") {
                 parameter("redirect_to", SupabaseConfig.AUTH_REDIRECT_URL)
@@ -361,7 +371,10 @@ class SupabaseManager(
             return null
         }
         val rows = json.decodeFromString<List<MedicationRemoteRow>>(response.bodyAsText())
-        return rows.map { it.asMedication() }
+        val userId = current.user?.id.orEmpty()
+        return rows.map { row ->
+            row.asMedication().copy(name = nameCipher.decryptForAccount(row.name, userId))
+        }
     }
 
     private suspend fun upsertMedications(
@@ -369,7 +382,12 @@ class SupabaseManager(
         current: AuthSession,
         userId: String,
     ): Boolean {
-        val rows = store.medications.value.map { MedicationRemoteRow.from(it, userId) }
+        val rows = store.medications.value.map { medication ->
+            MedicationRemoteRow.from(
+                medication.copy(name = nameCipher.encryptForAccount(medication.name, userId)),
+                userId,
+            )
+        }
         if (rows.isEmpty()) return true
         val response = http.post("${SupabaseConfig.PROJECT_URL}/rest/v1/medications") {
             header("apikey", SupabaseConfig.PUBLISHABLE_KEY)

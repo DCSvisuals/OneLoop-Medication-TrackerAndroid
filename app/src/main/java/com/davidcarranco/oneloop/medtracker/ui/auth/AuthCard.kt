@@ -81,6 +81,7 @@ fun AuthCard(
     var showPassword by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(true) }
     var acceptedTerms by remember { mutableStateOf(false) }
+    var acceptedHealthData by remember { mutableStateOf(false) }
 
     LaunchedEffect(prefs.rememberedEmail) {
         if (email.isBlank() && prefs.rememberedEmail.isNotBlank()) {
@@ -93,7 +94,7 @@ fun AuthCard(
 
     val canSubmit = email.trim().isNotEmpty() &&
         password.length >= 6 &&
-        (mode == AuthMode.Login || acceptedTerms)
+        (mode == AuthMode.Login || (acceptedTerms && acceptedHealthData))
 
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -165,6 +166,10 @@ fun AuthCard(
                 }
             } else {
                 AuthCheckbox(acceptedTerms, "I agree to the Terms of Service") { acceptedTerms = it }
+                AuthCheckbox(
+                    acceptedHealthData,
+                    "I consent to OneLoop processing my medication names and schedules as health-related data for optional encrypted cloud backup (GDPR). I can use the app without an account.",
+                ) { acceptedHealthData = it }
             }
 
             if (isBusy) {
@@ -182,7 +187,8 @@ fun AuthCard(
                             else preferences.setRememberedEmail(null)
                             supabase.signInWithEmailPassword(email, password)
                         } else {
-                            if (!acceptedTerms) return@launch
+                            if (!acceptedTerms || !acceptedHealthData) return@launch
+                            preferences.setHealthDataConsent(true)
                             supabase.signUpWithEmailPassword(email, password, fullName)
                         }
                         if (supabase.isSignedIn.value || (mode == AuthMode.Register && supabase.lastError.value == null)) {
@@ -219,8 +225,17 @@ fun AuthCard(
                         .clip(CircleShape)
                         .background(colors.softBackground)
                         .border(1.dp, colors.cardBorder, CircleShape)
-                        .clickable(enabled = !isBusy) {
-                            scope.launch { supabase.signInWithGoogle() }
+                        .clickable(
+                            enabled = !isBusy &&
+                                (mode == AuthMode.Login || (acceptedTerms && acceptedHealthData)),
+                        ) {
+                            scope.launch {
+                                if (mode == AuthMode.Register) {
+                                    if (!acceptedTerms || !acceptedHealthData) return@launch
+                                    preferences.setHealthDataConsent(true)
+                                }
+                                supabase.signInWithGoogle()
+                            }
                         }
                         .semantics { contentDescription = "Google" },
                     contentAlignment = Alignment.Center,
@@ -304,6 +319,6 @@ private fun AuthCheckbox(checked: Boolean, label: String, onChange: (Boolean) ->
             tint = if (checked) colors.blue else colors.mutedText,
         )
         Spacer(Modifier.size(8.dp))
-        Text(label, color = colors.navy)
+        Text(label, color = colors.navy, modifier = Modifier.weight(1f))
     }
 }
