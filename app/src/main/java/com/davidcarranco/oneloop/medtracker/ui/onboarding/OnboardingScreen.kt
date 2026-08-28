@@ -253,8 +253,8 @@ private fun SplashPage(
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .fillMaxWidth(0.72f)
-                .padding(horizontal = 36.dp),
+                .fillMaxWidth(0.52f)
+                .padding(horizontal = 28.dp),
         )
     }
 }
